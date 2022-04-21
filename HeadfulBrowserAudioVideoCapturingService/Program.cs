@@ -20,8 +20,8 @@ await using var browser = await Puppeteer.LaunchAsync(options);
 
 await using var fileStream = File.Create("data.webm");
 
-bool Predicate(Target target) => target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{extensionId}");
-var extensionTarget = await browser.WaitForTargetAsync(Predicate);
+bool IsExtensionBackgroundPage(Target target) => target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{extensionId}");
+var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
 var extensionPage = await extensionTarget.PageAsync();
 await extensionPage.ExposeFunctionAsync<Args, object?>("sendData", args =>
 {
