@@ -9,7 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="PuppeteerSharp" Version="7.0.0" />
+        <Content Include="Extension\**\*" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="PuppeteerSharp" Version="7.0.0" />
     </ItemGroup>
 
 </Project>

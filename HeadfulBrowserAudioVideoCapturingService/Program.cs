@@ -4,8 +4,8 @@ using PuppeteerSharp;
 Console.WriteLine("Started...");
 using var browserFetcher = new BrowserFetcher();
 await browserFetcher.DownloadAsync();
-// TODO: path should not be hardcoded, but most likely still full path
-const string extensionPath = @"C:\dev\git_home\HeadfulBrowserAudioVideoCapturingService\extension";
+var extensionDirectoryInfo = new DirectoryInfo("Extension");
+var extensionPath = extensionDirectoryInfo.FullName;
 const string extensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 var browserArgs = new[]
 {
