@@ -2,5 +2,5 @@
 
 public class VideoConstraints
 {
-    public MandatoryVideoConstraints mandatory = new MandatoryVideoConstraints();
+    public MandatoryVideoConstraints Mandatory => new MandatoryVideoConstraints();
 }

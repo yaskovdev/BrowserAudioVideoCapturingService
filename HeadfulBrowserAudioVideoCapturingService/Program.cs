@@ -39,5 +39,6 @@ await page.BringToFrontAsync();
 var capture = new Capture();
 
 await capture.StartCapturing(extensionPage);
-await Task.Delay(5000);
+const int capturingDurationMs = 5000;
+await Task.Delay(capturingDurationMs);
 await capture.StopCapturing(extensionPage);

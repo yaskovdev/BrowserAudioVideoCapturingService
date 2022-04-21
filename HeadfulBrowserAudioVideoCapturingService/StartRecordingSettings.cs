@@ -2,10 +2,15 @@
 
 public class StartRecordingSettings
 {
-    public int index = Constants.PageIndex;
-    public bool audio = true;
-    public bool video = true;
-    public int timesliceMs = 100;
-    public string mimeType = "video/webm"; // TODO: replace with video/mp4
-    public VideoConstraints videoConstraints = new VideoConstraints();
+    public int Index => Constants.PageIndex;
+
+    public bool Audio => true;
+
+    public bool Video => true;
+
+    public int TimeSliceMs => 100;
+
+    public string MimeType => "video/webm"; // TODO: replace with video/mp4
+
+    public VideoConstraints VideoConstraints => new VideoConstraints();
 }
