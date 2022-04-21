@@ -36,7 +36,7 @@ await page.GoToAsync("https://yaskovdev.github.io/video-and-audio-capturing-test
 await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
 await page.BringToFrontAsync();
 
-var capture = new Capture();
+var capture = new CapturingService();
 
 await capture.StartCapturing(extensionPage);
 const int capturingDurationMs = 5000;

@@ -2,7 +2,7 @@
 
 namespace HeadfulBrowserAudioVideoCapturingService;
 
-public class Capture
+public class CapturingService
 {
     public async Task StartCapturing(Page extensionPage) => await extensionPage.EvaluateFunctionAsync("START_RECORDING", new StartRecordingSettings());
 
