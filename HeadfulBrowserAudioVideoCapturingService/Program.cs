@@ -16,16 +16,20 @@ var browserArgs = new[]
     $"--whitelisted-extension-id={extensionId}"
 };
 var options = new LaunchOptions { Headless = false, Args = browserArgs };
-var launchAsync = Puppeteer.LaunchAsync(options);
-await using var browser = await launchAsync;
+await using var browser = await Puppeteer.LaunchAsync(options);
 
 bool Predicate(Target target) => target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{extensionId}");
 var extensionTarget = await browser.WaitForTargetAsync(Predicate);
 var extensionPage = await extensionTarget.PageAsync();
 await extensionPage.ExposeFunctionAsync<Args, object?>("sendData", args =>
 {
-    Console.WriteLine($"Data is {args.data}");
-    File.WriteAllText("data.txt", args.data);
+    Console.WriteLine($"Received {args.data.Length} bytes of data");
+    var bytes = new byte[args.data.Length];
+    for (var i = 0; i < args.data.Length; i++)
+    {
+        bytes[i] = (byte)args.data[i];
+    }
+    File.WriteAllBytes("data.webm", bytes);
     return null;
 });
 
@@ -33,10 +37,11 @@ var pages = await browser.PagesAsync();
 var page = pages[0];
 await page.GoToAsync("https://yaskovdev.github.io/video-and-audio-capturing-test/");
 await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
+await page.BringToFrontAsync();
 
 var capture = new Capture();
 
-await capture.StartCapturing(extensionPage, page, new CaptureOptions());
+await capture.StartCapturing(extensionPage);
 await Task.Delay(5000);
 await capture.StopCapturing(extensionPage);
-await Task.Delay(300000);
+await Task.Delay(1000);
