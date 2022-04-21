@@ -22,7 +22,7 @@ chrome.browserAction.onClicked.addListener(function (activeTab) {
     START_RECORDING(options)
 })
 
-function START_RECORDING({ index, video, audio, frameSize, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond, mimeType, videoConstraints }) {
+function START_RECORDING({ index, video, audio, timesliceMs, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond, mimeType, videoConstraints }) {
     chrome.tabCapture.capture(
         {
             audio,
@@ -73,7 +73,7 @@ function START_RECORDING({ index, video, audio, frameSize, audioBitsPerSecond, v
                 } catch (error) {}
             };
 
-            recorder.start(frameSize);
+            recorder.start(timesliceMs);
         }
     );
 }

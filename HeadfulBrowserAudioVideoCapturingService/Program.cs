@@ -18,18 +18,15 @@ var browserArgs = new[]
 var options = new LaunchOptions { Headless = false, Args = browserArgs };
 await using var browser = await Puppeteer.LaunchAsync(options);
 
+await using var fileStream = File.Create("data.webm");
+
 bool Predicate(Target target) => target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{extensionId}");
 var extensionTarget = await browser.WaitForTargetAsync(Predicate);
 var extensionPage = await extensionTarget.PageAsync();
 await extensionPage.ExposeFunctionAsync<Args, object?>("sendData", args =>
 {
     Console.WriteLine($"Received {args.data.Length} bytes of data");
-    var bytes = new byte[args.data.Length];
-    for (var i = 0; i < args.data.Length; i++)
-    {
-        bytes[i] = (byte)args.data[i];
-    }
-    File.WriteAllBytes("data.webm", bytes);
+    fileStream.Write(args.data.Select(c => (byte)c).ToArray());
     return null;
 });
 
@@ -44,4 +41,3 @@ var capture = new Capture();
 await capture.StartCapturing(extensionPage);
 await Task.Delay(5000);
 await capture.StopCapturing(extensionPage);
-await Task.Delay(1000);
