@@ -1,7 +1,7 @@
 // @ts-nocheck
 /* global chrome, MediaRecorder, FileReader */
 
-const recorders = {};
+let recorder = null;
 
 chrome.browserAction.onClicked.addListener(function (activeTab) {
     console.log('Extension button clicked')
@@ -18,11 +18,11 @@ chrome.browserAction.onClicked.addListener(function (activeTab) {
             maxFrameRate: 60,  // Note: Frame rate is variable (0 <= x <= 60).
         }
     }
-    const options = {index: 0, audio: true, video: true, mimeType: 'video/mp4', videoConstraints};
+    const options = {audio: true, video: true, mimeType: 'video/mp4', videoConstraints};
     START_RECORDING(options)
 })
 
-function START_RECORDING({ index, video, audio, timeSliceMs, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond, mimeType, videoConstraints }) {
+function START_RECORDING({ video, audio, timeSliceMs, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond, mimeType, videoConstraints }) {
     chrome.tabCapture.capture(
         {
             audio,
@@ -39,7 +39,6 @@ function START_RECORDING({ index, video, audio, timeSliceMs, audioBitsPerSecond,
                 bitsPerSecond,
                 mimeType
             });
-            recorders[index] = recorder;
             // TODO: recorder onerror
 
             recorder.ondataavailable = async function (event) {
@@ -49,10 +48,7 @@ function START_RECORDING({ index, video, audio, timeSliceMs, audioBitsPerSecond,
                     const data = arrayBufferToString(buffer);
 
                     if (window.sendData) {
-                        window.sendData({
-                            id: index,
-                            data,
-                        });
+                        window.sendData(data);
                     }
                 }
             };
@@ -78,10 +74,8 @@ function START_RECORDING({ index, video, audio, timeSliceMs, audioBitsPerSecond,
     );
 }
 
-function STOP_RECORDING(index) {
-    //chrome.extension.getBackgroundPage().console.log(recorders)
-    if (!recorders[index]) return;
-    recorders[index].stop();
+function STOP_RECORDING() {
+    if (recorder) recorder.stop()
 }
 
 function arrayBufferToString(buffer) {

@@ -23,10 +23,10 @@ await using var fileStream = File.Create("data.webm");
 bool IsExtensionBackgroundPage(Target target) => target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{extensionId}");
 var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
 var extensionPage = await extensionTarget.PageAsync();
-await extensionPage.ExposeFunctionAsync<Args, object?>("sendData", args =>
+await extensionPage.ExposeFunctionAsync<string, object?>("sendData", data =>
 {
-    Console.WriteLine($"Received {args.data.Length} bytes of data");
-    fileStream.Write(args.data.Select(c => (byte)c).ToArray());
+    Console.WriteLine($"Received {data.Length} bytes of data");
+    fileStream.Write(data.Select(c => (byte)c).ToArray());
     return null;
 });
 

@@ -2,8 +2,6 @@
 
 public class StartRecordingSettings
 {
-    public int Index => Constants.PageIndex;
-
     public bool Audio => true;
 
     public bool Video => true;
