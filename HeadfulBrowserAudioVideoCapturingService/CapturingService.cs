@@ -4,7 +4,14 @@ namespace HeadfulBrowserAudioVideoCapturingService;
 
 public class CapturingService
 {
-    public async Task StartCapturing(Page extensionPage) => await extensionPage.EvaluateFunctionAsync("START_RECORDING", new StartRecordingSettings());
+    private readonly Page _extensionPage;
 
-    public async Task StopCapturing(Page extensionPage) => await extensionPage.EvaluateFunctionAsync("STOP_RECORDING");
+    public CapturingService(Page extensionPage)
+    {
+        _extensionPage = extensionPage;
+    }
+
+    public async Task StartCapturing() => await _extensionPage.EvaluateFunctionAsync("START_RECORDING", new StartRecordingSettings());
+
+    public async Task StopCapturing() => await _extensionPage.EvaluateFunctionAsync("STOP_RECORDING");
 }

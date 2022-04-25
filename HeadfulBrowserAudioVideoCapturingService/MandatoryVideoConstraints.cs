@@ -2,15 +2,15 @@
 
 public class MandatoryVideoConstraints
 {
-    public int MinWidth => 1920;
+    public int MinWidth => Constants.Width;
 
-    public int MinHeight => 1080;
+    public int MinHeight => Constants.Height;
 
-    public int MaxWidth => 1920;
+    public int MaxWidth => Constants.Width;
 
-    public int MaxHeight => 1080;
+    public int MaxHeight => Constants.Height;
 
-    public int MinFrameRate => 15;
+    public int MinFrameRate => Constants.FrameRate;
 
-    public int MaxFrameRate => 15;
+    public int MaxFrameRate => Constants.FrameRate;
 }

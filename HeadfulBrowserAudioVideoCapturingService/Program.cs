@@ -36,12 +36,12 @@ await extensionPage.ExposeFunctionAsync<string, object?>("sendData", data =>
 var pages = await browser.PagesAsync();
 var page = pages[0];
 await page.GoToAsync("https://yaskovdev.github.io/video-and-audio-capturing-test/");
-await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
+await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
 await page.BringToFrontAsync();
 
-var capture = new CapturingService();
+var capture = new CapturingService(extensionPage);
 
-await capture.StartCapturing(extensionPage);
+await capture.StartCapturing();
 const int capturingDurationMs = 3600000;
 await Task.Delay(capturingDurationMs);
-await capture.StopCapturing(extensionPage);
+await capture.StopCapturing();
