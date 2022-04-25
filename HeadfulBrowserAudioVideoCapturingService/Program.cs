@@ -27,8 +27,16 @@ public static class Program
                     await page.BringToFrontAsync();
 
                     var capturingService = new CapturingService(extensionPage);
+                    
+                    await using var fileStream = File.Create("data.webm");
 
-                    await extensionPage.ExposeFunctionAsync<string, Task>("sendData", async data => await inputStream.WriteAsync(ToByteArray(data)));
+                    await extensionPage.ExposeFunctionAsync<string, Task>("sendData", async data =>
+                    {
+                        Console.WriteLine($"Going to write {data.Length} bytes");
+                        await File.AppendAllTextAsync("data.txt", data);
+                        await inputStream.WriteAsync(ToByteArray(data));
+                        await fileStream.WriteAsync(ToByteArray(data));
+                    });
 
                     await capturingService.StartCapturing();
                     Console.WriteLine("Press any key to stop capturing...");
