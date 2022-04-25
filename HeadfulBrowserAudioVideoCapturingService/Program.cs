@@ -18,7 +18,7 @@ var browserArgs = new[]
 var options = new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe"};
 await using var browser = await Puppeteer.LaunchAsync(options);
 
-// await using var fileStream = File.Create("data.mp4");
+// await using var inputStream = File.Create("data.webm");
 
 var ffmpegWrapper = new FfmpegWrapper();
 var inputStream = ffmpegWrapper.StartFfmpeg();
