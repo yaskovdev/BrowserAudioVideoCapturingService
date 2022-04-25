@@ -2,10 +2,10 @@
 
 namespace HeadfulBrowserAudioVideoCapturingService;
 
-public class FfmpegWrapper : IDisposable
+public class FfmpegWrapper : IAsyncDisposable
 {
-    private const string InputArgs = "-i -";
-    private const string OutputArgs = "-vcodec copy -acodec aac -strict -2 -y -f mpegts \"srt://127.0.0.1:4000?mode=listener\"";
+    private const string InputArgs = "-re -i -";
+    private const string OutputArgs = "-c copy -f mpegts \"srt://127.0.0.1:4000?mode=listener\""; // TODO: previously audio was re-encoded, may be still needed
 
     private readonly Process _process;
 
@@ -30,9 +30,9 @@ public class FfmpegWrapper : IDisposable
         return _process.StandardInput.BaseStream;
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _process.WaitForExit();
+        await _process.WaitForExitAsync();
         Console.WriteLine("ffmpeg stopped");
     }
 }
