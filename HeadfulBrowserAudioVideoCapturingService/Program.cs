@@ -15,10 +15,13 @@ var browserArgs = new[]
     $"--disable-extensions-except={extensionPath}",
     $"--whitelisted-extension-id={extensionId}"
 };
-var options = new LaunchOptions { Headless = false, Args = browserArgs };
+var options = new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe"};
 await using var browser = await Puppeteer.LaunchAsync(options);
 
-await using var fileStream = File.Create("data.webm");
+// await using var fileStream = File.Create("data.mp4");
+
+var ffmpegWrapper = new FfmpegWrapper();
+var inputStream = ffmpegWrapper.StartFfmpeg();
 
 bool IsExtensionBackgroundPage(Target target) => target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{extensionId}");
 var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
@@ -26,7 +29,7 @@ var extensionPage = await extensionTarget.PageAsync();
 await extensionPage.ExposeFunctionAsync<string, object?>("sendData", data =>
 {
     Console.WriteLine($"Received {data.Length} bytes of data");
-    fileStream.Write(data.Select(c => (byte)c).ToArray());
+    inputStream.Write(data.Select(c => (byte)c).ToArray());
     return null;
 });
 
@@ -39,6 +42,6 @@ await page.BringToFrontAsync();
 var capture = new CapturingService();
 
 await capture.StartCapturing(extensionPage);
-const int capturingDurationMs = 5000;
+const int capturingDurationMs = 3600000;
 await Task.Delay(capturingDurationMs);
 await capture.StopCapturing(extensionPage);
