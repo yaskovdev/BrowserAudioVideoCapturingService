@@ -1,47 +1,57 @@
-﻿using HeadfulBrowserAudioVideoCapturingService;
-using PuppeteerSharp;
+﻿using PuppeteerSharp;
 
-Console.WriteLine("Started...");
-using var browserFetcher = new BrowserFetcher();
-await browserFetcher.DownloadAsync();
-var extensionDirectoryInfo = new DirectoryInfo("Extension");
-var extensionPath = extensionDirectoryInfo.FullName;
-const string extensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
-var browserArgs = new[]
+namespace HeadfulBrowserAudioVideoCapturingService;
+
+public static class Program
 {
-    "--no-sandbox",
-    "--autoplay-policy=no-user-gesture-required",
-    $"--load-extension={extensionPath}",
-    $"--disable-extensions-except={extensionPath}",
-    $"--whitelisted-extension-id={extensionId}"
-};
-var options = new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe"};
-await using var browser = await Puppeteer.LaunchAsync(options);
+    private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
-// await using var inputStream = File.Create("data.webm");
+    public static async Task Main()
+    {
+        Console.WriteLine("Started...");
 
-var ffmpegWrapper = new FfmpegWrapper();
-var inputStream = ffmpegWrapper.StartFfmpeg();
+        var extensionDirectoryInfo = new DirectoryInfo("Extension");
+        var extensionPath = extensionDirectoryInfo.FullName;
+        var browserArgs = new[]
+        {
+            "--no-sandbox",
+            "--autoplay-policy=no-user-gesture-required",
+            $"--load-extension={extensionPath}",
+            $"--disable-extensions-except={extensionPath}",
+            $"--whitelisted-extension-id={ExtensionId}"
+        };
+        var options = new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe" };
+        await using var browser = await Puppeteer.LaunchAsync(options);
 
-bool IsExtensionBackgroundPage(Target target) => target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{extensionId}");
-var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
-var extensionPage = await extensionTarget.PageAsync();
-await extensionPage.ExposeFunctionAsync<string, object?>("sendData", data =>
-{
-    Console.WriteLine($"Received {data.Length} bytes of data");
-    inputStream.Write(data.Select(c => (byte)c).ToArray());
-    return null;
-});
+        var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
+        var extensionPage = await extensionTarget.PageAsync();
 
-var pages = await browser.PagesAsync();
-var page = pages[0];
-await page.GoToAsync("https://yaskovdev.github.io/video-and-audio-capturing-test/");
-await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
-await page.BringToFrontAsync();
+        var pages = await browser.PagesAsync();
+        var page = pages[0];
+        await page.GoToAsync("https://yaskovdev.github.io/video-and-audio-capturing-test/");
+        await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
+        await page.BringToFrontAsync();
 
-var capture = new CapturingService(extensionPage);
+        var capture = new CapturingService(extensionPage);
 
-await capture.StartCapturing();
-const int capturingDurationMs = 3600000;
-await Task.Delay(capturingDurationMs);
-await capture.StopCapturing();
+        using (var ffmpegWrapper = new FfmpegWrapper())
+        {
+            await using var inputStream = ffmpegWrapper.StartFfmpeg();
+
+            await extensionPage.ExposeFunctionAsync<string, object?>("sendData", data =>
+            {
+                inputStream.Write(data.Select(c => (byte)c).ToArray());
+                return null;
+            });
+
+            await capture.StartCapturing();
+            Console.WriteLine("Press any key to stop capturing...");
+            Console.ReadKey();
+        }
+
+        await capture.StopCapturing(); // TODO: shouldn't you first stop capturing and then dispose ffmpeg to avoid sending captured media to the closed stream?
+    }
+
+    private static bool IsExtensionBackgroundPage(Target target) =>
+        target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{ExtensionId}");
+}
