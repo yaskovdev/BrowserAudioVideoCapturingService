@@ -28,12 +28,7 @@ public static class Program
 
                     var capturingService = new CapturingService(extensionPage);
 
-                    await extensionPage.ExposeFunctionAsync<string, object?>("sendData", data =>
-                    {
-                        // TODO: try to write async
-                        inputStream.Write(data.Select(c => (byte)c).ToArray());
-                        return null;
-                    });
+                    await extensionPage.ExposeFunctionAsync<string, Task>("sendData", async data => await inputStream.WriteAsync(ToByteArray(data)));
 
                     await capturingService.StartCapturing();
                     Console.WriteLine("Press any key to stop capturing...");
@@ -64,6 +59,8 @@ public static class Program
         };
         return new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = ChromeExecutablePath };
     }
+
+    private static byte[] ToByteArray(string buffer) => buffer.Select(c => (byte)c).ToArray();
 
     private static bool IsExtensionBackgroundPage(Target target) =>
         target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{ExtensionId}");

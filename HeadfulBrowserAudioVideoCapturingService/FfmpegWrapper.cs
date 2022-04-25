@@ -9,8 +9,7 @@ public class FfmpegWrapper : IAsyncDisposable
 
     private readonly Process _process;
 
-    public FfmpegWrapper()
-    {
+    public FfmpegWrapper() =>
         _process = new Process
         {
             StartInfo =
@@ -22,7 +21,6 @@ public class FfmpegWrapper : IAsyncDisposable
                 RedirectStandardInput = true
             }
         };
-    }
 
     public Stream StartFfmpeg()
     {
@@ -30,9 +28,5 @@ public class FfmpegWrapper : IAsyncDisposable
         return _process.StandardInput.BaseStream;
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await _process.WaitForExitAsync();
-        Console.WriteLine("ffmpeg stopped");
-    }
+    public async ValueTask DisposeAsync() => await _process.WaitForExitAsync();
 }
