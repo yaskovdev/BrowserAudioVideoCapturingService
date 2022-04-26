@@ -11,5 +11,8 @@ public static class Constants
     /// <summary>
     /// See https://developer.mozilla.org/en-US/docs/Web/Media/Formats/codecs_parameter#avc_profiles.
     /// </summary>
-    public const string Encoder = "avc1.424028";
+    public const string VideoEncoder = "avc1.424028";
+
+    // TODO: what audio codecs are fine for InputComponent to understand (previously it was absent; InputComponent wanted aac)?
+    public const string AudioEncoder = "opus";
 }
