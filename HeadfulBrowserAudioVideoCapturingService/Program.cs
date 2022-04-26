@@ -34,8 +34,15 @@ public static class Program
                     });
 
                     await capturingService.StartCapturing();
-                    Console.WriteLine("Press any key to stop capturing...");
-                    await Task.Delay(-1); // TODO: locally you should wait for key press
+                    try
+                    {
+                        Console.WriteLine("If console is available, press any key to stop capturing...");
+                        Console.ReadKey();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        await Task.Delay(-1);
+                    }
                     Console.WriteLine("Going to stop capturing...");
 
                     await capturingService.StopCapturing();
@@ -46,6 +53,20 @@ public static class Program
             Console.WriteLine("Input stream closed");
         }
         Console.WriteLine("ffmpeg closed");
+    }
+
+    private static bool IsConsolePresent()
+    {
+        try
+        {
+            var unused = Console.WindowHeight;
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
     }
 
     private static LaunchOptions ChromeLaunchOptions()
