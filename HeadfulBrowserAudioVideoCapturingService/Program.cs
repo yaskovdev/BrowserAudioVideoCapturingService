@@ -55,20 +55,6 @@ public static class Program
         Console.WriteLine("ffmpeg closed");
     }
 
-    private static bool IsConsolePresent()
-    {
-        try
-        {
-            var unused = Console.WindowHeight;
-            return true;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return false;
-        }
-    }
-
     private static LaunchOptions ChromeLaunchOptions()
     {
         var extensionDirectoryInfo = new DirectoryInfo("Extension");
