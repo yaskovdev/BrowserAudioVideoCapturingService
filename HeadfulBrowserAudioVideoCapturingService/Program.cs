@@ -4,7 +4,7 @@ namespace HeadfulBrowserAudioVideoCapturingService;
 
 public static class Program
 {
-    private const string ChromeExecutablePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe"; // TODO: unhardcode
+    private const string ChromeExecutablePath = @"/usr/bin/google-chrome"; // TODO: unhardcode
     private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
     public static async Task Main()
@@ -24,7 +24,6 @@ public static class Program
                     var page = pages[0];
                     await page.GoToAsync("https://yaskovdev.github.io/video-and-audio-capturing-test/");
                     await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
-                    await page.BringToFrontAsync();
 
                     var capturingService = new CapturingService(extensionPage);
                     
@@ -40,7 +39,7 @@ public static class Program
 
                     await capturingService.StartCapturing();
                     Console.WriteLine("Press any key to stop capturing...");
-                    Console.ReadKey();
+                    await Task.Delay(-1);
                     Console.WriteLine("Going to stop capturing...");
 
                     await capturingService.StopCapturing();

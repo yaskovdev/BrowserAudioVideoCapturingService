@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <Content Include="Extension\**\*" CopyToOutputDirectory="Always" />
+        <Content Include="run.sh" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
     <ItemGroup>

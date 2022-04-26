@@ -1,7 +1,26 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/runtime:6.0-jammy AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
+    libgbm-dev \
+    xvfb \
+    ffmpeg \
+    wget \
+&& rm -rf /var/lib/apt/lists/* 
+
+# TODO: find a way to install Google Chrome without --fix-broken hack
+RUN wget https://dl.google.com/linux/direct/google-chrome-unstable_current_amd64.deb \
+ ; dpkg -i google-chrome-unstable_current_amd64.deb \
+ ; apt-get -y update \
+ ; apt-get -y upgrade \
+ ; apt -y --fix-broken install
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0-jammy AS build
 WORKDIR /src
 COPY ["HeadfulBrowserAudioVideoCapturingService/HeadfulBrowserAudioVideoCapturingService.csproj", "HeadfulBrowserAudioVideoCapturingService/"]
 RUN dotnet restore "HeadfulBrowserAudioVideoCapturingService/HeadfulBrowserAudioVideoCapturingService.csproj"
@@ -15,4 +34,5 @@ RUN dotnet publish "HeadfulBrowserAudioVideoCapturingService.csproj" -c Release 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "HeadfulBrowserAudioVideoCapturingService.dll"]
+RUN chmod +x ./run.sh
+CMD ["./run.sh"]
