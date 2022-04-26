@@ -26,20 +26,16 @@ public static class Program
                     await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
 
                     var capturingService = new CapturingService(extensionPage);
-                    
-                    await using var fileStream = File.Create("data.webm");
 
                     await extensionPage.ExposeFunctionAsync<string, Task>("sendData", async data =>
                     {
                         Console.WriteLine($"Going to write {data.Length} bytes");
-                        await File.AppendAllTextAsync("data.txt", data);
                         await inputStream.WriteAsync(ToByteArray(data));
-                        await fileStream.WriteAsync(ToByteArray(data));
                     });
 
                     await capturingService.StartCapturing();
                     Console.WriteLine("Press any key to stop capturing...");
-                    await Task.Delay(-1);
+                    await Task.Delay(-1); // TODO: locally you should wait for key press
                     Console.WriteLine("Going to stop capturing...");
 
                     await capturingService.StopCapturing();
