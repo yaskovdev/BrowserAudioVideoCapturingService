@@ -4,18 +4,18 @@ namespace HeadfulBrowserAudioVideoCapturingService;
 
 public static class Program
 {
-    private const string ChromeExecutablePath = @"/usr/bin/google-chrome"; // TODO: unhardcode
     private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
-    public static async Task Main()
+    public static async Task Main(string[] args)
     {
-        Console.WriteLine("Started...");
+        Console.WriteLine("Starting...");
+        var chromeExecutablePath = args[0];
 
         await using (var ffmpegWrapper = new FfmpegWrapper())
         {
             await using (var inputStream = ffmpegWrapper.StartFfmpeg())
             {
-                await using (var browser = await Puppeteer.LaunchAsync(ChromeLaunchOptions()))
+                await using (var browser = await Puppeteer.LaunchAsync(ChromeLaunchOptions(chromeExecutablePath)))
                 {
                     var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
                     var extensionPage = await extensionTarget.PageAsync();
@@ -55,7 +55,7 @@ public static class Program
         Console.WriteLine("ffmpeg closed");
     }
 
-    private static LaunchOptions ChromeLaunchOptions()
+    private static LaunchOptions ChromeLaunchOptions(string chromeExecutablePath)
     {
         var extensionDirectoryInfo = new DirectoryInfo("Extension");
         var extensionPath = extensionDirectoryInfo.FullName;
@@ -67,7 +67,7 @@ public static class Program
             $"--disable-extensions-except={extensionPath}",
             $"--whitelisted-extension-id={ExtensionId}"
         };
-        return new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = ChromeExecutablePath };
+        return new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = chromeExecutablePath };
     }
 
     private static byte[] ToByteArray(string buffer) => buffer.Select(c => (byte)c).ToArray();
