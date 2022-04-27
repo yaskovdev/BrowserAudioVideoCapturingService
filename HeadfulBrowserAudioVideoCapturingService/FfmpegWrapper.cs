@@ -28,5 +28,9 @@ public class FfmpegWrapper : IAsyncDisposable
         return _process.StandardInput.BaseStream;
     }
 
-    public async ValueTask DisposeAsync() => await _process.WaitForExitAsync();
+    public async ValueTask DisposeAsync()
+    {
+        await _process.WaitForExitAsync();
+        GC.SuppressFinalize(this);
+    }
 }

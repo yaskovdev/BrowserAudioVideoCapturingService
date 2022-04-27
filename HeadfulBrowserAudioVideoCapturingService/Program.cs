@@ -34,14 +34,14 @@ public static class Program
                     });
 
                     await capturingService.StartCapturing();
+                    Console.WriteLine("If console is available, press any key to stop capturing...");
                     try
                     {
-                        Console.WriteLine("If console is available, press any key to stop capturing...");
                         Console.ReadKey();
                     }
                     catch (InvalidOperationException)
                     {
-                        await Task.Delay(-1);
+                        await Task.Delay(Timeout.Infinite);
                     }
                     Console.WriteLine("Going to stop capturing...");
 
