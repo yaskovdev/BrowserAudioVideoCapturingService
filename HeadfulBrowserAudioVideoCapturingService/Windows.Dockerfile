@@ -3,7 +3,7 @@ WORKDIR /app
 
 RUN powershell Set-ExecutionPolicy -Scope LocalMachine -ExecutionPolicy Bypass
 
-RUN powershell -Command iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+RUN powershell -Command Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 RUN choco install -y googlechrome
 RUN choco install -y ffmpeg
 RUN choco install -y dotnet-6.0-runtime
