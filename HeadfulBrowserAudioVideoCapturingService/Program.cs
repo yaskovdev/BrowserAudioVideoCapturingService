@@ -29,7 +29,7 @@ public static class Program
 
                     await extensionPage.ExposeFunctionAsync<string, Task>("sendData", async data =>
                     {
-                        Console.WriteLine($"Going to write {data.Length} bytes");
+                        Console.WriteLine($"Going to write {data.Length / (double)1024:0.00} KB of media");
                         await inputStream.WriteAsync(ToByteArray(data));
                     });
 

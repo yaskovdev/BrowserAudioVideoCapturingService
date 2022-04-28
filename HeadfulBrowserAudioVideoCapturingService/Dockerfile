@@ -2,12 +2,6 @@
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    libnss3 \
-    libxss1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libgtk-3-0 \
-    libgbm-dev \
     xvfb \
     ffmpeg \
     wget \
