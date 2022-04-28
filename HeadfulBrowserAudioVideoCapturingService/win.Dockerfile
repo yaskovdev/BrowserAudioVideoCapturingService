@@ -1,14 +1,14 @@
-﻿FROM mcr.microsoft.com/windows/nanoserver:ltsc2022 AS base
+﻿FROM mcr.microsoft.com/windows:20H2 AS base
 WORKDIR /app
 
 RUN powershell Set-ExecutionPolicy -Scope LocalMachine -ExecutionPolicy Bypass
 
-RUN powershell -Command Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+RUN powershell -Command iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
 RUN choco install -y googlechrome
 RUN choco install -y ffmpeg
 RUN choco install -y dotnet-6.0-runtime
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0-nanoserver-ltsc2022 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-windowsservercore-ltsc2022 AS build
 WORKDIR /src
 COPY ["HeadfulBrowserAudioVideoCapturingService/HeadfulBrowserAudioVideoCapturingService.csproj", "HeadfulBrowserAudioVideoCapturingService/"]
 RUN dotnet restore "HeadfulBrowserAudioVideoCapturingService/HeadfulBrowserAudioVideoCapturingService.csproj"
