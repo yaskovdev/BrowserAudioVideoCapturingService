@@ -4,9 +4,9 @@ public class MandatoryVideoConstraints
 {
     public int MinWidth => Constants.Width;
 
-    public int MinHeight => Constants.Height;
-
     public int MaxWidth => Constants.Width;
+
+    public int MinHeight => Constants.Height;
 
     public int MaxHeight => Constants.Height;
 

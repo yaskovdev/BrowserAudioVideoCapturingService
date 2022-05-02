@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* global chrome, MediaRecorder, FileReader */
+/* global chrome, MediaRecorder */
 
 let recorder = null
 
@@ -14,7 +14,6 @@ function START_RECORDING({ video, audio, timeSliceMs, audioBitsPerSecond, videoB
             if (!stream) return
 
             recorder = new MediaRecorder(stream, {
-                ignoreMutedMedia: true,
                 audioBitsPerSecond,
                 videoBitsPerSecond,
                 bitsPerSecond,
@@ -59,7 +58,7 @@ function STOP_RECORDING() {
 }
 
 /**
- * Convert an ArrayBuffer to an UTF-8 string.
+ * Convert an ArrayBuffer to a UTF-8 string.
  */
 function arrayBufferToString(buffer) {
     const bufView = new Uint8Array(buffer)
