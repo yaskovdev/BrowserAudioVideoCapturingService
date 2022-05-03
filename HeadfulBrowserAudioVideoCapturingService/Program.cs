@@ -22,7 +22,7 @@ public static class Program
 
                     var pages = await browser.PagesAsync();
                     var page = pages[0];
-                    await page.GoToAsync("https://yaskovdev.github.io/video-and-audio-capturing-test/");
+                    await page.GoToAsync("https://www.youtube.com/embed/E4mDz3a0aIo?autoplay=1&loop=1&playlist=E4mDz3a0aIo");
                     await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
 
                     var capturingService = new CapturingService(extensionPage);

@@ -8,7 +8,7 @@ public class StartRecordingSettings
 
     public int TimeSliceMs => 1000;
 
-    public string MimeType => $"video/webm; codecs=\"{Constants.VideoEncoder},{Constants.AudioEncoder}\"";
+    public string MimeType => $"video/webm;codecs=\"{Constants.VideoEncoder},{Constants.AudioEncoder}\"";
 
     public VideoConstraints VideoConstraints => new();
 }
