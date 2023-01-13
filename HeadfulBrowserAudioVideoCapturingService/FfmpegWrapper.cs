@@ -5,8 +5,7 @@ namespace HeadfulBrowserAudioVideoCapturingService;
 public class FfmpegWrapper : IAsyncDisposable
 {
     private const string InputArgs = "-re -i -";
-    // TODO: with Docker the IP should be 0.0.0.0, also check if "-strict -2 -y" is needed
-    private const string OutputArgs = "-vcodec copy -acodec aac -ar 44100 -strict -2 -y -f mpegts \"srt://127.0.0.1:4000?mode=listener\"";
+    private const string OutputArgs = "-vcodec copy -acodec aac -ar 44100 -f mpegts \"srt://0.0.0.0:4000?mode=listener\"";
 
     private readonly Process _process;
 
