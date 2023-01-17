@@ -6,6 +6,8 @@ public static class Program
 {
     private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
+    private const string YouTubeVideoId = "ucZl6vQ_8Uo";
+
     public static async Task Main(string[] args)
     {
         Console.WriteLine("Starting...");
@@ -22,7 +24,7 @@ public static class Program
 
                     var pages = await browser.PagesAsync();
                     var page = pages[0];
-                    await page.GoToAsync("https://www.youtube.com/embed/E4mDz3a0aIo?autoplay=1&loop=1&playlist=E4mDz3a0aIo");
+                    await page.GoToAsync($"https://www.youtube.com/embed/{YouTubeVideoId}?autoplay=1&loop=1&playlist={YouTubeVideoId}");
                     await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
 
                     var capturingService = new CapturingService(extensionPage);
