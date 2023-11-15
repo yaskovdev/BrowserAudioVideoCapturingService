@@ -67,13 +67,16 @@ public static class Program
             "--autoplay-policy=no-user-gesture-required",
             $"--load-extension={extensionPath}",
             $"--disable-extensions-except={extensionPath}",
-            $"--whitelisted-extension-id={ExtensionId}"
+            $"--allowlisted-extension-id={ExtensionId}",
+            "--headless=new",
+            "--hide-scrollbars",
+            "--mute-audio"
         };
         return new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = chromeExecutablePath };
     }
 
     private static byte[] ToByteArray(string buffer) => buffer.Select(c => (byte)c).ToArray();
 
-    private static bool IsExtensionBackgroundPage(Target target) =>
+    private static bool IsExtensionBackgroundPage(ITarget target) =>
         target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{ExtensionId}");
 }

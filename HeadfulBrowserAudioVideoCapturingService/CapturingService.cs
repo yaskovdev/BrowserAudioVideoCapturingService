@@ -4,9 +4,9 @@ namespace HeadfulBrowserAudioVideoCapturingService;
 
 public class CapturingService
 {
-    private readonly Page _extensionPage;
+    private readonly IPage _extensionPage;
 
-    public CapturingService(Page extensionPage)
+    public CapturingService(IPage extensionPage)
     {
         _extensionPage = extensionPage;
     }
