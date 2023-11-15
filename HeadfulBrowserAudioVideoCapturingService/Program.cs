@@ -69,8 +69,7 @@ public static class Program
             $"--disable-extensions-except={extensionPath}",
             $"--allowlisted-extension-id={ExtensionId}",
             "--headless=new",
-            "--hide-scrollbars",
-            "--mute-audio"
+            "--hide-scrollbars"
         };
         return new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = chromeExecutablePath };
     }
