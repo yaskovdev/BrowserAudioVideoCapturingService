@@ -24,5 +24,4 @@ RUN dotnet publish "HeadfulBrowserAudioVideoCapturingService.csproj" -c Release 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN chmod +x ./run.sh
-CMD ["./run.sh"]
+ENTRYPOINT ["dotnet", "HeadfulBrowserAudioVideoCapturingService.dll", "/usr/bin/google-chrome"]
