@@ -6,7 +6,7 @@ public static class Program
 {
     private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
-    private const string YouTubeVideoId = "ucZl6vQ_8Uo";
+    private const string YouTubeVideoId = "IMyqasy2Lco";
 
     public static async Task Main(string[] args)
     {
