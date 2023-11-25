@@ -1,4 +1,4 @@
-﻿namespace HeadfulBrowserAudioVideoCapturingService;
+﻿namespace BrowserAudioVideoCapturingService;
 
 public class VideoConstraints
 {

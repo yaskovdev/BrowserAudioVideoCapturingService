@@ -1,6 +1,6 @@
-﻿using PuppeteerSharp;
+﻿namespace BrowserAudioVideoCapturingService;
 
-namespace HeadfulBrowserAudioVideoCapturingService;
+using PuppeteerSharp;
 
 public class CapturingService
 {

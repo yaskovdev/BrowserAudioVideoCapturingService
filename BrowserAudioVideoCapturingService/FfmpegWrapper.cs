@@ -1,4 +1,4 @@
-﻿namespace HeadfulBrowserAudioVideoCapturingService;
+﻿namespace BrowserAudioVideoCapturingService;
 
 using System.Diagnostics;
 

@@ -1,4 +1,4 @@
-﻿namespace HeadfulBrowserAudioVideoCapturingService;
+﻿namespace BrowserAudioVideoCapturingService;
 
 // TODO: can we increase Width, Height and / or FrameRate? Will if affect CPU consumption much? Or it is mostly VideoEncoder that is affecting it?
 public static class Constants
