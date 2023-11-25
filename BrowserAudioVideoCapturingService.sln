@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadfulBrowserAudioVideoCapturingService", "HeadfulBrowserAudioVideoCapturingService\HeadfulBrowserAudioVideoCapturingService.csproj", "{B75F8820-E87C-49C6-BE33-36B4E0A20FF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserAudioVideoCapturingService", "BrowserAudioVideoCapturingService\BrowserAudioVideoCapturingService.csproj", "{B75F8820-E87C-49C6-BE33-36B4E0A20FF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

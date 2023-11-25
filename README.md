@@ -1,4 +1,4 @@
-# Headful Browser Audio Video Capturing Service
+# Browser Audio Video Capturing Service
 
 ## Running Locally
 
@@ -9,16 +9,16 @@
 ## Running With Docker In Linux Container
 
 ```powershell
-docker build -f HeadfulBrowserAudioVideoCapturingService/Dockerfile -t yaskovdev/headful-capturing-server .
-docker run -p 4000:4000/udp -d yaskovdev/headful-capturing-server
+docker build -f BrowserAudioVideoCapturingService/Dockerfile -t yaskovdev/browser-capturing-server .
+docker run -p 4000:4000/udp -d yaskovdev/browser-capturing-server
 ffplay -i srt://127.0.0.1:4000
 ```
 
 ## Running With Docker In Windows Container
 
 ```powershell
-docker build -f HeadfulBrowserAudioVideoCapturingService/Windows.Dockerfile -t yaskovdev/headful-capturing-server .
-docker run -p 4000:4000/udp -d yaskovdev/headful-capturing-server
+docker build -f BrowserAudioVideoCapturingService/Windows.Dockerfile -t yaskovdev/browser-capturing-server .
+docker run -p 4000:4000/udp -d yaskovdev/browser-capturing-server
 ffplay -i srt://127.0.0.1:4000
 ```
 
