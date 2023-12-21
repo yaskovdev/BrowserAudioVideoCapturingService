@@ -1,12 +1,13 @@
 ﻿namespace BrowserAudioVideoCapturingService;
 
+using System.Reflection;
 using PuppeteerSharp;
 
 public static class Program
 {
     private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
-    private const string YouTubeVideoId = "IMyqasy2Lco";
+    private const string YouTubeVideoId = "8gR6uWsDaCI";
 
     public static async Task Main(string[] args)
     {
@@ -59,8 +60,7 @@ public static class Program
 
     private static LaunchOptions ChromeLaunchOptions(string chromeExecutablePath)
     {
-        var extensionDirectoryInfo = new DirectoryInfo("Extension");
-        var extensionPath = extensionDirectoryInfo.FullName;
+        var extensionPath = GetResourcePath("Extension");
         var browserArgs = new[]
         {
             "--no-sandbox",
@@ -78,4 +78,12 @@ public static class Program
 
     private static bool IsExtensionBackgroundPage(ITarget target) =>
         target.Type == TargetType.BackgroundPage && target.Url.StartsWith($"chrome-extension://{ExtensionId}");
+
+    private static string GetResourcePath(string name)
+    {
+        var location = Assembly.GetExecutingAssembly().Location;
+        var uriBuilder = new UriBuilder(location);
+        var path = Uri.UnescapeDataString(uriBuilder.Path);
+        return Path.Combine(Path.GetDirectoryName(path) ?? "", name);
+    }
 }
