@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="Extension\**\*" CopyToOutputDirectory="Always" />
+        <Content Include="Extension\**\*" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>

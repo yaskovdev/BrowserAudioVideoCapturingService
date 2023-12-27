@@ -1,16 +1,8 @@
 ﻿namespace BrowserAudioVideoCapturingService;
 
-public class MandatoryVideoConstraints
+public record MandatoryVideoConstraints(int MinWidth, int MaxWidth, int MinHeight, int MaxHeight, int MinFrameRate, int MaxFrameRate)
 {
-    public int MinWidth => Constants.Width;
-
-    public int MaxWidth => Constants.Width;
-
-    public int MinHeight => Constants.Height;
-
-    public int MaxHeight => Constants.Height;
-
-    public int MinFrameRate => Constants.FrameRate;
-
-    public int MaxFrameRate => Constants.FrameRate;
+    public MandatoryVideoConstraints(int width, int height, int frameRate) : this(width, width, height, height, frameRate, frameRate)
+    {
+    }
 }

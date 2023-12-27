@@ -26,11 +26,12 @@ function START_RECORDING({ video, audio, timeSliceMs, audioBitsPerSecond, videoB
                     const buffer = await event.data.arrayBuffer()
                     const data = arrayBufferToString(buffer)
 
-                    if (window.sendData) {
-                        window.sendData(data)
+                    if (window.sendData && event.target.state !== 'inactive') {
+                        window.sendData(stream.id, data)
                     }
                 }
             }
+
             recorder.onerror = () => recorder.stop()
 
             recorder.onstop = function () {
@@ -40,12 +41,15 @@ function START_RECORDING({ video, audio, timeSliceMs, audioBitsPerSecond, videoB
                     tracks.forEach(function (track) {
                         track.stop()
                     })
-                } catch (error) {}
+                } catch (error) {
+                }
             }
+
             stream.oninactive = () => {
                 try {
                     recorder.stop()
-                } catch (error) {}
+                } catch (error) {
+                }
             }
 
             recorder.start(timeSliceMs)

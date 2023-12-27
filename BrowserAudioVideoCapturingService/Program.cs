@@ -30,26 +30,29 @@ public static class Program
 
                     var capturingService = new CapturingService(extensionPage);
 
-                    await extensionPage.ExposeFunctionAsync<string, Task>("sendData", async data =>
+                    await extensionPage.ExposeFunctionAsync<string, string, Task>("sendData", async (streamId, data) =>
                     {
-                        Console.WriteLine($"Going to write {data.Length / (double)1024:0.00} KB of media");
+                        Console.WriteLine($"Going to write {data.Length / (double)1024:0.00} KB of media from stream {streamId}");
                         await inputStream.WriteAsync(ToByteArray(data));
                     });
 
-                    await capturingService.StartCapturing();
-                    Console.WriteLine("If console is available, press any key to stop capturing...");
-                    try
+                    await capturingService.StartCapturing(Constants.Width, Constants.Height, Constants.FrameRate);
+
+                    if (Environment.UserInteractive)
                     {
+                        Console.WriteLine("Press any key to stop capturing...");
                         Console.ReadKey();
                     }
-                    catch (InvalidOperationException)
+                    else
                     {
                         await Task.Delay(Timeout.Infinite);
                     }
                     Console.WriteLine("Going to stop capturing...");
 
                     await capturingService.StopCapturing();
-                    Console.WriteLine("Capturing stopped");
+                    const int waitMs = 2 * Constants.TimeSliceMs;
+                    Console.WriteLine($"Capturing stopped, waiting for {waitMs} ms to demonstrate that the extension will not send more data");
+                    await Task.Delay(waitMs);
                 }
                 Console.WriteLine("Browser closed");
             }
