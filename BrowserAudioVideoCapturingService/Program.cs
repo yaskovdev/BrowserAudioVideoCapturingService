@@ -1,5 +1,6 @@
 ﻿namespace BrowserAudioVideoCapturingService;
 
+using System.Diagnostics;
 using System.Reflection;
 using PuppeteerSharp;
 
@@ -7,36 +8,51 @@ public static class Program
 {
     private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
-    private const string YouTubeVideoId = "8gR6uWsDaCI";
+    private const string YouTubeVideoId = "xmGaAjeqaBQ";
+
+    private static int _receivedFirstChunk;
 
     public static async Task Main(string[] args)
     {
-        Console.WriteLine("Starting...");
+        Console.WriteLine("Starting stopwatch...");
         var chromeExecutablePath = args[0];
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
 
         await using (var ffmpegWrapper = new FfmpegWrapper())
         {
             await using (var inputStream = ffmpegWrapper.StartFfmpeg())
             {
+                Console.WriteLine($"Launched ffmpeg, {stopwatch.ElapsedMilliseconds} ms passed");
                 await using (var browser = await Puppeteer.LaunchAsync(ChromeLaunchOptions(chromeExecutablePath)))
                 {
+                    Console.WriteLine($"Launched the browser, {stopwatch.ElapsedMilliseconds} ms passed");
                     var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
                     var extensionPage = await extensionTarget.PageAsync();
 
                     var pages = await browser.PagesAsync();
+                    Console.WriteLine($"Got {pages.Length} pages, {stopwatch.ElapsedMilliseconds} ms passed");
                     var page = pages[0];
                     await page.GoToAsync($"https://www.youtube.com/embed/{YouTubeVideoId}?autoplay=1&loop=1&playlist={YouTubeVideoId}");
+                    Console.WriteLine($"Opened YouTube, {stopwatch.ElapsedMilliseconds} ms passed");
                     await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
+                    Console.WriteLine($"Set viewport, {stopwatch.ElapsedMilliseconds} ms passed");
 
                     var capturingService = new CapturingService(extensionPage);
 
                     await extensionPage.ExposeFunctionAsync<string, string, Task>("sendData", async (streamId, data) =>
                     {
+                        if (Interlocked.CompareExchange(ref _receivedFirstChunk, 1, 0) == 0)
+                        {
+                            Console.WriteLine($"Received first chunk, {stopwatch.ElapsedMilliseconds} ms passed");
+                        }
                         Console.WriteLine($"Going to write {data.Length / (double)1024:0.00} KB of media from stream {streamId}");
                         await inputStream.WriteAsync(ToByteArray(data));
                     });
+                    Console.WriteLine($"Exposed the capturing callback, {stopwatch.ElapsedMilliseconds} ms passed");
 
                     await capturingService.StartCapturing(Constants.Width, Constants.Height, Constants.FrameRate);
+                    Console.WriteLine($"Started capturing, {stopwatch.ElapsedMilliseconds} ms passed");
 
                     if (Environment.UserInteractive)
                     {
