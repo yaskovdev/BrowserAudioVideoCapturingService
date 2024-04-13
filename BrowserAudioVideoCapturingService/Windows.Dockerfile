@@ -1,12 +1,13 @@
-﻿FROM mcr.microsoft.com/windows:20H2 AS base
+﻿FROM mcr.microsoft.com/windows:ltsc2019 AS base
 WORKDIR /app
 
 RUN powershell Set-ExecutionPolicy -Scope LocalMachine -ExecutionPolicy Bypass
 
+ENV chocolateyVersion=1.4.0
 RUN powershell -Command Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-RUN choco install -y googlechrome
-RUN choco install -y ffmpeg
-RUN choco install -y dotnet-6.0-runtime
+RUN choco install googlechrome -y --ignore-checksums
+RUN choco install ffmpeg -y
+RUN choco install dotnet-6.0-sdk -y
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-windowsservercore-ltsc2022 AS build
 WORKDIR /src

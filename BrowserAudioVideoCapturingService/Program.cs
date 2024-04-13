@@ -8,7 +8,7 @@ public static class Program
 {
     private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
-    private const string YouTubeVideoId = "xmGaAjeqaBQ";
+    private const string YouTubeVideoId = "IMyqasy2Lco";
 
     private static int _receivedFirstChunk;
 
@@ -27,18 +27,30 @@ public static class Program
                 await using (var browser = await Puppeteer.LaunchAsync(ChromeLaunchOptions(chromeExecutablePath)))
                 {
                     Console.WriteLine($"Launched the browser, {stopwatch.ElapsedMilliseconds} ms passed");
-                    var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
-                    var extensionPage = await extensionTarget.PageAsync();
 
-                    var pages = await browser.PagesAsync();
-                    Console.WriteLine($"Got {pages.Length} pages, {stopwatch.ElapsedMilliseconds} ms passed");
-                    var page = pages[0];
+                    for (var i = 0; i < 8; i++)
+                    {
+                        _ = await browser.NewPageAsync();
+                        Console.WriteLine($"Opened an empty warmup page {i}, {stopwatch.ElapsedMilliseconds} ms passed");
+                    }
+
+                    var page = await browser.NewPageAsync();
+                    Console.WriteLine($"Opened the actual new page for YouTube, {stopwatch.ElapsedMilliseconds} ms passed");
+
                     await page.GoToAsync($"https://www.youtube.com/embed/{YouTubeVideoId}?autoplay=1&loop=1&playlist={YouTubeVideoId}");
                     Console.WriteLine($"Opened YouTube, {stopwatch.ElapsedMilliseconds} ms passed");
+
                     await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
                     Console.WriteLine($"Set viewport, {stopwatch.ElapsedMilliseconds} ms passed");
 
+                    var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
+                    Console.WriteLine($"Found extension target, {stopwatch.ElapsedMilliseconds} ms passed");
+
+                    var extensionPage = await extensionTarget.PageAsync();
+                    Console.WriteLine($"Found extension page, {stopwatch.ElapsedMilliseconds} ms passed");
+
                     var capturingService = new CapturingService(extensionPage);
+                    Console.WriteLine($"Created capturing service, {stopwatch.ElapsedMilliseconds} ms passed");
 
                     await extensionPage.ExposeFunctionAsync<string, string, Task>("sendData", async (streamId, data) =>
                     {
