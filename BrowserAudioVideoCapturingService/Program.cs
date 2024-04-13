@@ -8,14 +8,14 @@ public static class Program
 {
     private const string ExtensionId = "jjndjgheafjngoipoacpjgeicjeomjli";
 
-    private const string YouTubeVideoId = "xmGaAjeqaBQ";
+    private const string YouTubeVideoId = "IMyqasy2Lco";
 
     private static int _receivedFirstChunk;
 
     public static async Task Main(string[] args)
     {
         Console.WriteLine("Starting stopwatch...");
-        var chromeExecutablePath = args[0];
+        var chromiumExecutablePath = args[0];
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
@@ -24,21 +24,23 @@ public static class Program
             await using (var inputStream = ffmpegWrapper.StartFfmpeg())
             {
                 Console.WriteLine($"Launched ffmpeg, {stopwatch.ElapsedMilliseconds} ms passed");
-                await using (var browser = await Puppeteer.LaunchAsync(ChromeLaunchOptions(chromeExecutablePath)))
+                await using (var browser = await Puppeteer.LaunchAsync(ChromiumLaunchOptions(chromiumExecutablePath)))
                 {
                     Console.WriteLine($"Launched the browser, {stopwatch.ElapsedMilliseconds} ms passed");
+
                     var extensionTarget = await browser.WaitForTargetAsync(IsExtensionBackgroundPage);
                     var extensionPage = await extensionTarget.PageAsync();
+                    Console.WriteLine($"Loaded the browser extension, {stopwatch.ElapsedMilliseconds} ms passed");
 
                     var pages = await browser.PagesAsync();
                     Console.WriteLine($"Got {pages.Length} pages, {stopwatch.ElapsedMilliseconds} ms passed");
+
                     var page = pages[0];
                     await page.GoToAsync($"https://www.youtube.com/embed/{YouTubeVideoId}?autoplay=1&loop=1&playlist={YouTubeVideoId}");
                     Console.WriteLine($"Opened YouTube, {stopwatch.ElapsedMilliseconds} ms passed");
+
                     await page.SetViewportAsync(new ViewPortOptions { Width = Constants.Width, Height = Constants.Height });
                     Console.WriteLine($"Set viewport, {stopwatch.ElapsedMilliseconds} ms passed");
-
-                    var capturingService = new CapturingService(extensionPage);
 
                     await extensionPage.ExposeFunctionAsync<string, string, Task>("sendData", async (streamId, data) =>
                     {
@@ -51,6 +53,7 @@ public static class Program
                     });
                     Console.WriteLine($"Exposed the capturing callback, {stopwatch.ElapsedMilliseconds} ms passed");
 
+                    var capturingService = new CapturingService(extensionPage);
                     await capturingService.StartCapturing(Constants.Width, Constants.Height, Constants.FrameRate);
                     Console.WriteLine($"Started capturing, {stopwatch.ElapsedMilliseconds} ms passed");
 
@@ -77,7 +80,7 @@ public static class Program
         Console.WriteLine("ffmpeg closed");
     }
 
-    private static LaunchOptions ChromeLaunchOptions(string chromeExecutablePath)
+    private static LaunchOptions ChromiumLaunchOptions(string chromiumExecutablePath)
     {
         var extensionPath = GetResourcePath("Extension");
         var browserArgs = new[]
@@ -90,7 +93,7 @@ public static class Program
             "--headless=new",
             "--hide-scrollbars"
         };
-        return new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = chromeExecutablePath };
+        return new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = chromiumExecutablePath };
     }
 
     private static byte[] ToByteArray(string buffer) => buffer.Select(c => (byte)c).ToArray();
