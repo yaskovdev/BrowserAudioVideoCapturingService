@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: experiment-linux
+  name: experiment-linux
+spec:
+  containers:
+  - image: mcr.microsoft.com/dotnet/runtime:6.0-jammy
+    name: experiment-linux
+    command: [ "/bin/bash", "-ic" ]
+    resources: {}
+  dnsPolicy: ClusterFirst
+  nodeSelector:
+    kubernetes.io/os: linux
+  restartPolicy: Always
+status: {}

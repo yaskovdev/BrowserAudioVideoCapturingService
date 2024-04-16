@@ -113,8 +113,9 @@ public static class Program
     private static string GetResourcePath(string name)
     {
         var location = Assembly.GetExecutingAssembly().Location;
-        var uriBuilder = new UriBuilder(location);
-        var path = Uri.UnescapeDataString(uriBuilder.Path);
-        return Path.Combine(Path.GetDirectoryName(path) ?? "", name);
+        Console.WriteLine("Assembly is " + location);
+        var directoryName = Path.GetDirectoryName(location) ?? throw new InvalidOperationException("Cannot get directory name for location " + location);
+        Console.WriteLine("Assembly directory is " + directoryName);
+        return Path.Combine(directoryName, name);
     }
 }

@@ -5,7 +5,7 @@ RUN powershell Set-ExecutionPolicy -Scope LocalMachine -ExecutionPolicy Bypass
 
 ENV chocolateyVersion=1.4.0
 RUN powershell -Command Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-RUN choco install googlechrome -y --ignore-checksums
+RUN choco install googlechrome --version 124.0.6367.60 -y --ignore-checksums
 RUN choco install ffmpeg -y
 RUN choco install dotnet-6.0-sdk -y
 
