@@ -3,7 +3,7 @@
 // TODO: can we increase Width, Height and / or FrameRate? Will if affect CPU consumption much? Or it is mostly VideoEncoder that is affecting it?
 public static class Constants
 {
-    public const int TimeSliceMs = 1000;
+    public const int TimeSliceMs = 10;
     
     public const int Width = 1280;
 

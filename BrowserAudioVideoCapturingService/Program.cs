@@ -28,12 +28,6 @@ public static class Program
                 {
                     Console.WriteLine($"Launched the browser, {stopwatch.ElapsedMilliseconds} ms passed");
 
-                    for (var i = 0; i < 8; i++)
-                    {
-                        _ = await browser.NewPageAsync();
-                        Console.WriteLine($"Opened an empty warmup page {i}, {stopwatch.ElapsedMilliseconds} ms passed");
-                    }
-
                     var page = await browser.NewPageAsync();
                     Console.WriteLine($"Opened the actual new page for YouTube, {stopwatch.ElapsedMilliseconds} ms passed");
 
@@ -66,15 +60,7 @@ public static class Program
                     await capturingService.StartCapturing(Constants.Width, Constants.Height, Constants.FrameRate);
                     Console.WriteLine($"Started capturing, {stopwatch.ElapsedMilliseconds} ms passed");
 
-                    if (Environment.UserInteractive)
-                    {
-                        Console.WriteLine("Press any key to stop capturing...");
-                        Console.ReadKey();
-                    }
-                    else
-                    {
-                        await Task.Delay(Timeout.Infinite);
-                    }
+                    await Task.Delay(Timeout.Infinite);
                     Console.WriteLine("Going to stop capturing...");
 
                     await capturingService.StopCapturing();
@@ -94,12 +80,24 @@ public static class Program
         var extensionPath = GetResourcePath("Extension");
         var browserArgs = new[]
         {
+            "--no-default-browser-check",
+            "--no-first-run",
+            "--disable-default-apps",
+            "--disable-popup-blocking",
+            "--disable-translate",
+            "--disable-background-timer-throttling",
+            "--disable-renderer-backgrounding",
+            "--disable-device-discovery-notifications",
             "--no-sandbox",
             "--autoplay-policy=no-user-gesture-required",
+            "--disable-features=WebRtcHideLocalIpsWithMdns",
             $"--load-extension={extensionPath}",
             $"--disable-extensions-except={extensionPath}",
             $"--allowlisted-extension-id={ExtensionId}",
             "--headless=new",
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-gpu-sandbox",
             "--hide-scrollbars"
         };
         return new LaunchOptions { Headless = false, Args = browserArgs, ExecutablePath = chromeExecutablePath };
